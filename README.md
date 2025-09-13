@@ -1,46 +1,117 @@
-# Getting Started with Create React App
+# Performance Management Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository contains the **frontend** for the Performance Management application.  
+The frontend is built with **React + TypeScript** (via Create React App) and runs inside a **Docker container** with Yarn as the package manager.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Prerequisites
+- [Node.js](https://nodejs.org) (for local dev if not using Docker)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-### `yarn start`
+### Install Yarn
+If Yarn is not installed, install it globally using npm:
+```bash
+npm install -g yarn
+```
+Verify installation:
+```bash
+yarn --version
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Project Setup
 
-### `yarn test`
+### 1. Initialize React App
+Inside the empty cloned repo:
+```bash
+yarn create react-app . --template typescript
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This generates:
+- `package.json` and `yarn.lock`
+- `src/` and `public/` folders
+- CRA scripts:  
+  - `yarn start` → start dev server  
+  - `yarn build` → production build  
+  - `yarn test` → run tests  
 
-### `yarn build`
+Verify locally:
+```bash
+yarn start
+```
+Open <http://localhost:3000>.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Dockerize the App
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### `.dockerignore`
+```gitignore
+node_modules
+.git
+.gitignore
+npm-debug.log
+yarn-error.log
+dist
+build
+```
 
-### `yarn eject`
+#### `Dockerfile`
+```dockerfile
+FROM node:20
+WORKDIR /app
+COPY package.json yarn.lock* ./
+RUN yarn install
+COPY . .
+EXPOSE 3000
+CMD ["yarn", "start"]
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### `docker-compose.yml`
+```yaml
+version: "3.9"
+services:
+  frontend:
+    build: .
+    container_name: performance-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 3. Run with Docker
+Build and start the container:
+```bash
+docker compose up --build
+```
+Visit <http://localhost:3000> to see the app.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Stop with:
+```bash
+docker compose down
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 4. Git Setup
+Add and commit files:
+```bash
+git add .
+git commit -m "Initialize React frontend with Docker setup"
+git push origin main
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
+
+## Next Steps
+- Add backend service (FastAPI + PostgreSQL).
+- Integrate API calls into the frontend.
+- Add CI/CD workflows.
