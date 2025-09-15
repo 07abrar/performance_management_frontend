@@ -1,0 +1,10 @@
+{
+  "name": "performance-frontend",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "frontend",
+  "workspaceFolder": "/app",
+  "overrideCommand": false,
+  "remoteUser": "node",
+  "shutdownAction": "none",
+  "postStartCommand": "echo Dev container ready"
+}
