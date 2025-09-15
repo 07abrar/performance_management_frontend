@@ -48,7 +48,6 @@ export default function RecapPage() {
       if (mode === 'weekly') return recapWeekly(weekStart);
       return recapMonthly(year, month);
     },
-    keepPreviousData: true,
   });
 
   return (
@@ -120,15 +119,15 @@ export default function RecapPage() {
       {data && (
         <>
           <p>
-            Period: <strong>{data.period}</strong> | From{' '}
-            {dayjs(data.start).format('YYYY-MM-DD HH:mm')} to{' '}
-            {dayjs(data.end).format('YYYY-MM-DD HH:mm')} | Total minutes:{' '}
-            {data.total_minutes}
+            Period: <strong>{(data as RecapOut).period}</strong> | From{' '}
+            {dayjs((data as RecapOut).start).format('YYYY-MM-DD HH:mm')} to{' '}
+            {dayjs((data as RecapOut).end).format('YYYY-MM-DD HH:mm')} | Total minutes:{' '}
+            {(data as RecapOut).total_minutes}
           </p>
 
-          {data.items.length > 0 ? (
+          {(data as RecapOut).items.length > 0 ? (
             <>
-              <RecapChart data={data.items} />
+              <RecapChart data={(data as RecapOut).items} />
               <table style={{ marginTop: 12, borderCollapse: 'collapse' }}>
                 <thead>
                   <tr>
@@ -138,7 +137,7 @@ export default function RecapPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.items.map(it => (
+                  {(data as RecapOut).items.map((it: RecapEntry) => (
                     <tr key={it.activity_id}>
                       <td style={{ padding: 6 }}>{it.activity_name}</td>
                       <td style={{ textAlign: 'right', padding: 6 }}>{it.minutes}</td>
