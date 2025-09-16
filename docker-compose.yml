@@ -8,5 +8,8 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    user: "node:node"
     stdin_open: true
     tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
