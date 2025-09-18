@@ -3,8 +3,31 @@
   "dockerComposeFile": ["../docker-compose.yml"],
   "service": "frontend",
   "workspaceFolder": "/app",
-  "overrideCommand": false,
+  "overrideCommand": true,
   "remoteUser": "node",
-  "shutdownAction": "none",
-  "postStartCommand": "echo Dev container ready"
+  "shutdownAction": "stopCompose",
+  "postCreateCommand": "yarn install",
+  "postStartCommand": "echo 'Dev container ready. Run yarn dev or yarn start to begin development.'",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Frontend App",
+      "onAutoForward": "notify"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-json"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
+    }
+  }
 }
